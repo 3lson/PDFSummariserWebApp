@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Summarizer</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #e66465, #9198e5);
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #007bff;
+        }
+        h2 {
+            margin-top: 20px;
+            color: #333;
+        }
+        button {
+            padding: 10px 15px;
+            margin-top: 10px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: none;
+            margin-top: 10px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+        select {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-top: 10px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+        #inputLength {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        #loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 4px solid #007bff;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Summarize PDF Documents or Text</h1>
+        
+        <h2>Upload PDF File:</h2>
+        <form id="uploadForm">
+            <input type="file" id="pdfFile" accept="application/pdf" />
+            <label for="summaryLength">Select Summary Length:</label>
+            <select id="summaryLength">
+                <option value="short">Short</option>
+                <option value="medium" selected>Medium</option>
+                <option value="long">Long</option>
+            </select>
+            <button type="submit">Summarize PDF</button>
+        </form>
+
+        <h2>Or Paste Text Below:</h2>
+        <form id="textForm">
+            <textarea id="inputText" rows="10" cols="50" placeholder="Paste your text here..."></textarea>
+            <label for="summaryLengthText">Select Summary Length:</label>
+            <select id="summaryLengthText">
+                <option value="short">Short</option>
+                <option value="medium" selected>Medium</option>
+                <option value="long">Long</option>
+            </select>
+            <button type="submit">Summarize Text</button>
+        </form>
+
+        <h2>Input Length:</h2>
+        <p id="inputLength"></p> <!-- Display input length -->
+
+        <h2>Summary:</h2>
+        <p id="summary"></p>
+
+        <div id="loading">
+            <div class="spinner"></div>
+            <p>Loading...</p>
+        </div>
+    </div>
+
+    <script>
+        const uploadForm = document.getElementById('uploadForm');
+        const textForm = document.getElementById('textForm');
+        const summaryElement = document.getElementById('summary');
+        const inputLengthElement = document.getElementById('inputLength');
+        const loadingElement = document.getElementById('loading');
+
+        // Handle PDF upload and summarization
+        uploadForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            loadingElement.style.display = 'block'; // Show loading spinner
+
+            const fileInput = document.getElementById('pdfFile');
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            const summaryLength = document.getElementById('summaryLength').value;
+            formData.append('length', summaryLength);
+
+            const response = await fetch('http://127.0.0.1:8000/summarize/pdf', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+            summaryElement.innerText = data.summary || data.error;
+            inputLengthElement.innerText = `Input Length: ${data.input_length}`;
+            loadingElement.style.display = 'none'; // Hide loading spinner
+        });
+
+        // Handle text input and summarization
+        textForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            loadingElement.style.display = 'block'; // Show loading spinner
+
+            const inputText = document.getElementById('inputText').value;
+            const summaryLength = document.getElementById('summaryLengthText').value;
+
+            // Log the values being sent
+            console.log('Input Text:', inputText);
+            console.log('Summary Length:', summaryLength);
+
+            const response = await fetch('http://127.0.0.1:8000/summarize/text', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ text: inputText, length: summaryLength })
+            });
+
+            const data = await response.json();
+            summaryElement.innerText = data.summary || data.error;
+            inputLengthElement.innerText = `Input Length: ${data.input_length}`;
+            loadingElement.style.display = 'none'; // Hide loading spinner
+        });
+    </script>
+</body>
+</html>
