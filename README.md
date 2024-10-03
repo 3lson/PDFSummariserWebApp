@@ -37,7 +37,7 @@ Best practices for organizing code and keeping it modular for maintainability an
 **Issue**: While developing the summarization model, I encountered errors related to the input text tokenization, which often led to exceptions during the summarization process. The model struggled with properly segmenting and processing the input text, resulting in failed summarization attempts.
 **Solution**: To mitigate these issues, I implemented the SentencePiece tokenizer, which improved the handling of input text by providing more efficient tokenization. This change allowed the model to process the input more accurately and reduced the frequency of errors during summarization.
 
-2.Challenges with Multi-Part File Uploads in FastAPI:
+2. Challenges with Multi-Part File Uploads in FastAPI:
 **Issue**: During the implementation of file uploads, I faced challenges related to multi-part requests in FastAPI. Uploading larger PDF files occasionally resulted in timeouts or incomplete reads of the uploaded content, causing the application to fail in processing the file.
 **Solution**: I addressed this issue by utilizing FastAPI’s UploadFile class, which enabled asynchronous handling of file uploads. Additionally, I configured appropriate request size limits within FastAPI to ensure that larger files could be uploaded without timing out. This significantly improved the reliability of the file upload process and enhanced user experience.
 
