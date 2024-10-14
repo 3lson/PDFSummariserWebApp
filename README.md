@@ -1,69 +1,74 @@
 # PDF Summarizer Web Application
 
 ## Overview
-The PDF Summarizer Web Application is a user-friendly tool that allows users to upload PDF documents or paste text for summarization. It utilizes modern web technologies to provide a seamless experience, including a loading feature to enhance user interaction. This project is designed to help users quickly extract essential information from lengthy documents or text.
 
-## Context 
-We will be using Google's PEGASUS from the transformer library of hugging face (open-source NLP models)
+The PDF Summarizer Web Application is a handy tool that lets users upload PDF documents or paste text to get quick summaries. The goal is to help users extract key points from long documents or text without having to read everything. The app includes a user-friendly interface and a loading indicator to enhance the experience, making it smooth and interactive.
+
+## Context
+
+This project uses Google’s PEGASUS model from Hugging Face’s transformer library, which is a powerful open-source NLP model designed for summarization.
 
 ## Technologies Used
-HTML: For structuring the web page.
-CSS: For styling and making the application visually appealing.
-JavaScript: For handling user interactions and making API requests.
-FastAPI: A modern web framework for building APIs with Python.
-Fetch API: To handle asynchronous requests to the backend.
-FormData: To manage file uploads and data submission in a user-friendly way.
 
+- **HTML**: For structuring the web page.
+- **CSS**: To style the app and make it visually appealing.
+- **JavaScript**: For managing user interactions and making requests to the back-end.
+- **FastAPI**: A modern Python framework used to build the API.
+- **Fetch API**: For handling asynchronous requests to the back-end.
+- **FormData**: To make file uploads and text submissions simple and efficient.
 
 ## Key Features
-PDF Upload: Users can upload a PDF file, and the application will summarize its content based on the selected length (short, medium, long). **Issue to fix**
 
-Text Input: Users can also paste text directly into a text area for summarization.
-Loading Indicator: A loading spinner provides feedback to users while their requests are being processed.
-
-Responsive Design: The application is designed to work seamlessly on various screen sizes.
+- **PDF Upload**: Users can upload a PDF, and the app summarizes its content based on the selected length (short, medium, or long). *Note: There's an issue with this feature that needs fixing*.
+- **Text Input**: Users can paste text directly for summarization instead of uploading a file.
+- **Loading Indicator**: While the app processes the request, a spinner shows to let users know it's working.
+- **Responsive Design**: The app is designed to work smoothly on all devices, from desktops to mobile phones.
 
 ## What I Learned
-Throughout the development of this application, I learned:
 
-How to integrate a front-end interface with a back-end API using JavaScript's Fetch API.
-The importance of user feedback through loading indicators and responsive design to improve user experience.
+Working on this project taught me several valuable lessons:
 
-How to handle file uploads and JSON data within web forms effectively.
-Best practices for organizing code and keeping it modular for maintainability and scalability.
+- **Front-End & Back-End Integration**: I learned how to effectively connect the front-end with a back-end API using JavaScript’s Fetch API.
+- **User Experience (UX) Design**: Implementing a loading indicator taught me the importance of providing feedback to users to improve the overall experience.
+- **Handling File Uploads**: I learned the best practices for handling file uploads and managing form data in a web environment.
+- **Modular Code Structure**: I gained experience in organizing my code in a modular way, making it easier to maintain and scale.
 
-## Issues encountered and solutions
-1. Tokenization Errors During Summarization:
-**Issue**: While developing the summarization model, I encountered errors related to the input text tokenization, which often led to exceptions during the summarization process. The model struggled with properly segmenting and processing the input text, resulting in failed summarization attempts.
-**Solution**: To mitigate these issues, I implemented the SentencePiece tokenizer, which improved the handling of input text by providing more efficient tokenization. This change allowed the model to process the input more accurately and reduced the frequency of errors during summarization.
+## Issues Encountered and Solutions
 
-2. Challenges with Multi-Part File Uploads in FastAPI:
-**Issue**: During the implementation of file uploads, I faced challenges related to multi-part requests in FastAPI. Uploading larger PDF files occasionally resulted in timeouts or incomplete reads of the uploaded content, causing the application to fail in processing the file.
-**Solution**: I addressed this issue by utilizing FastAPI’s UploadFile class, which enabled asynchronous handling of file uploads. Additionally, I configured appropriate request size limits within FastAPI to ensure that larger files could be uploaded without timing out. This significantly improved the reliability of the file upload process and enhanced user experience.
+### 1. Tokenization Errors During Summarization
 
+**Issue**: The model initially had trouble tokenizing the input text, which caused errors during summarization. 
 
-3. CORS Error Due to Different Domains:
-**Issue**: While testing the application, I encountered Cross-Origin Resource Sharing (CORS) errors due to the FastAPI backend and HTML frontend being served from different domains. This prevented the frontend from making requests to the backend, blocking the intended functionality.
-**Solution**: I resolved this issue by configuring CORS middleware in FastAPI to allow requests from all origins during development. This setup enabled seamless communication between the frontend and backend without CORS-related interruptions.
+**Solution**: I switched to using the SentencePiece tokenizer, which handled the text better and significantly reduced errors.
 
-4. Max Input Limit of 512 Tokens:
-**Issue**: The PEGASUS model has a maximum input limit of 512 tokens, which resulted in awkward truncation of longer texts during summarization. This often led to incomplete or unclear summaries, diminishing the effectiveness of the application.
-**Solution**: To address this limitation, I implemented a strategy to appropriately split the input text into individual segments that fit within the token limit. After processing these segments separately, I merged the results into a cohesive final summary. This approach significantly improved the quality of the summaries generated by the application.
+### 2. Challenges with Multi-Part File Uploads in FastAPI
 
+**Issue**: Uploading larger PDFs sometimes resulted in timeouts or incomplete reads.
+
+**Solution**: I used FastAPI's `UploadFile` class for asynchronous file handling and adjusted the request size limits, improving file upload reliability.
+
+### 3. CORS Errors Due to Different Domains
+
+**Issue**: When the front-end and back-end ran on different domains, CORS (Cross-Origin Resource Sharing) errors prevented the app from working.
+
+**Solution**: I added CORS middleware to FastAPI to allow cross-domain requests, resolving the issue.
+
+### 4. Max Input Limit of 512 Tokens
+
+**Issue**: The PEGASUS model only supports inputs up to 512 tokens, leading to truncated summaries for longer texts.
+
+**Solution**: I implemented a strategy to split longer text into smaller chunks that fit within the token limit. After processing each chunk separately, I combined the results into one coherent summary.
 
 ## Future Improvements
-While the application is functional, there are several areas for future improvement:
 
-Enhanced Error Handling: Implement more robust error handling to manage different scenarios, such as network issues or unsupported file types.
-Summary Quality: Investigate and integrate more advanced summarization algorithms or natural language processing (NLP) models to improve the quality of the summaries generated.
+There’s a lot of potential for making this app even better:
 
-User Authentication: Consider adding user authentication to allow users to save and manage their previous summaries.
-
-Mobile Optimization: Further optimize the user interface for mobile devices, ensuring usability and accessibility.
-
-Testing: Implement unit and integration tests to ensure the reliability and stability of the application.
-
-Deployment: Host the application on a cloud platform (e.g., Heroku, AWS) for wider accessibility.
+- **Better Error Handling**: Add more comprehensive error handling for cases like network failures or unsupported file types.
+- **Improved Summary Quality**: Explore and integrate more advanced models to generate higher-quality summaries.
+- **User Authentication**: Add a login feature so users can save and manage their summaries.
+- **Mobile Optimization**: Further refine the design for an even better mobile experience.
+- **Testing**: Implement unit and integration tests to ensure stability and reliability.
+- **Deployment**: Deploy the app to a cloud platform (like Heroku or AWS) so it’s accessible to more users.
 
 ## Installation
 
